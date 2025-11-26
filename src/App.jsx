@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import './index.css'
 
-const API_BASE_URL = 'https://agenda-backend-n0wt.onrender.com';
+const API_BASE_URL = 'https://agenda-backend-n0wt.onrender.com/api';
 
 // ----------------------------------------------------------------------
 // 1. Hook Personalizado para la API
