@@ -2,33 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
-/*
- * TaskFlow Dashboard - Estilos Globales
- * Diseño: Elegante, Cómodo y Responsivo (Basado en Tarjetas)
- */
-
 /* -------------------------------------------------- */
 /* 1. Variables de Diseño y Paleta de Colores */
 /* -------------------------------------------------- */
 :root {
-    /* Colores Principales */
-    --color-primary: #4f46e5;      /* Indigo 600 - Profundo y Sólido */
-    --color-primary-light: #6366f1; /* Indigo 500 - Para interacciones */
-    --color-primary-dark: #3730a3;  /* Indigo 800 - Para hover */
-    --color-success: #10b981;      /* Emerald 500 */
-    --color-danger: #ef4444;       /* Red 500 */
-    --color-warning: #f59e0b;      /* Amber 500 */
-
-    /* Colores de Fondo y Borde */
-    --color-bg-subtle: #f9fafb;     /* Fondo principal muy claro */
-    --color-bg-card: #ffffff;      /* Fondo de las tarjetas */
-    --color-border: #e5e7eb;       /* Borde sutil */
-    
-    /* Colores de Texto */
+    --color-primary: #4f46e5;     
+    --color-primary-light: #6366f1; 
+    --color-primary-dark: #3730a3;  
+    --color-success: #10b981;    
+    --color-danger: #ef4444;      
+    --color-warning: #f59e0b;   
+    --color-bg-subtle: #f9fafb;   
+    --color-bg-card: #ffffff;     
+    --color-border: #e5e7eb;     
     --color-text-dark: #1f2937;
     --color-text-light: #6b7280;
-
-    /* Propiedades de Layout */
     --radius-base: 12px;
 }
 
@@ -199,7 +187,7 @@ background: none;
     font-weight: 800;
     color: var(--color-text-dark);
     border-bottom: 3px solid #f3f4f6;
-    margin-bottom: 2rem; /* AUMENTADO para más separación con la lista */
+    margin-bottom: 2rem;
     padding-bottom: 0.75rem;
 }
 
@@ -333,10 +321,8 @@ display: inline-flex;
 /* 7. Adaptación a Dispositivos (Responsive) */
 /* -------------------------------------------------- */
 
-/* Estructura de Columnas (Desktop y Tablets Grandes) */
 @media (min-width: 1024px) {
     .dashboard-grid {
-        /* Define la estructura 1.2/2.0 para los paneles */
         grid-template-columns: 1.2fr 2fr; 
         gap: 2rem;
     }
@@ -346,17 +332,15 @@ display: inline-flex;
     }
 }
 
-/* Teléfonos Móviles (max-width: 767px) */
 @media (max-width: 767px) {
     .dashboard-grid {
-        grid-template-columns: 1fr; /* Una sola columna en móvil */
+        grid-template-columns: 1fr; 
         gap: 1.5rem;
     }
     .tasks-header {
         font-size: 1.25rem; 
     }
     
-    /* Ordenar los paneles: formularios (1) primero, lista (2) después */
     .dashboard-grid > div:nth-child(1) {
         order: 1;
     }
@@ -364,7 +348,6 @@ display: inline-flex;
         order: 2;
     }
 
-    /* Ajustes para el Task Item en móvil */
     .task-item {
         flex-direction: column;
         align-items: flex-start;
