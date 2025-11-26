@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import './index.css'
 
-// URL base de tu backend Express. ¡Asegúrate de que coincida con el puerto donde está corriendo tu servidor!
 const API_BASE_URL = 'http://localhost:5000';
 
 // ----------------------------------------------------------------------
@@ -11,7 +10,6 @@ const API_BASE_URL = 'http://localhost:5000';
 const useApi = () => {
     const getToken = () => localStorage.getItem('token');
 
-    // Función genérica para manejar peticiones (Estable)
     const request = useCallback(async (endpoint, method = 'GET', data = null, isAuth = true) => {
         const url = `${API_BASE_URL}${endpoint}`;
         const headers = {
@@ -37,18 +35,15 @@ const useApi = () => {
             const response = await fetch(url, config);
 
             if (response.status === 401) {
-                // Forzar cierre de sesión en caso de token inválido o expirado
                 localStorage.removeItem('token');
                 window.location.reload();
                 throw new Error('Sesión expirada o no autorizada. Por favor, inicia sesión de nuevo.');
             }
 
-            // Manejar respuestas 204 (No Content) sin intentar parsear JSON
             if (response.status === 204) {
                 return {}; 
             }
 
-            // Manejar errores HTTP genéricos
             if (!response.ok) {
                 let errorMessage = `Error HTTP ${response.status}`;
                 try {
@@ -59,12 +54,10 @@ const useApi = () => {
                          errorMessage = errorResult.error;
                     }
                 } catch (e) {
-                    // Ignorar error de JSON parseo si el cuerpo no es JSON
                 }
                 throw new Error(errorMessage);
             }
 
-            // Intentar parsear JSON
             const result = await response.json();
             return result;
 
@@ -74,7 +67,6 @@ const useApi = () => {
         }
     }, []);
 
-    // Funciones específicas para la API
     const auth = useMemo(() => ({
         login: (credentials) => request('/api/auth/login', 'POST', credentials, false),
         register: (data) => request('/api/auth/register', 'POST', data, false),
@@ -83,7 +75,6 @@ const useApi = () => {
     const tasks = useMemo(() => ({
         getAll: () => request('/api/tasks'), 
         create: (taskData) => request('/api/tasks', 'POST', taskData),
-        // Update usa PUT (reemplazo completo)
         update: (id, taskData) => request(`/api/tasks/${id}`, 'PUT', taskData), 
         delete: (id) => request(`/api/tasks/${id}`, 'DELETE'), 
     }), [request]);
@@ -91,7 +82,6 @@ const useApi = () => {
     const categories = useMemo(() => ({
         getAll: () => request('/api/categories'),
         create: (categoryData) => request('/api/categories', 'POST', categoryData),
-        // CAMBIO: Añadir el método 'delete' para categorías
         delete: (id) => request(`/api/categories/${id}`, 'DELETE'),
     }), [request]);
 
@@ -102,7 +92,6 @@ const useApi = () => {
 // 2. Componentes de UI
 // ----------------------------------------------------------------------
 
-// Componente para manejar el inicio de sesión y registro
 const AuthForm = ({ onAuthSuccess }) => {
     const { auth } = useApi();
     const [isLogin, setIsLogin] = useState(true);
@@ -198,7 +187,6 @@ const AuthForm = ({ onAuthSuccess }) => {
     );
 };
 
-// Componente para crear y editar tareas
 const TaskForm = ({ taskToEdit, categories, onSave, onCancel }) => {
     const [title, setTitle] = useState(taskToEdit?.title || '');
     const [description, setDescription] = useState(taskToEdit?.description || '');
@@ -231,14 +219,11 @@ const TaskForm = ({ taskToEdit, categories, onSave, onCancel }) => {
         try {
             let result;
             if (taskToEdit) {
-                // Editar tarea existente
                 result = await tasks.update(taskToEdit._id, taskData);
                 onSave(result.task, 'updated');
             } else {
-                // Crear nueva tarea
                 result = await tasks.create(taskData);
                 onSave(result.task, 'created');
-                // Limpiar formulario al crear
                 setTitle('');
                 setDescription('');
                 setDueDate('');
@@ -331,7 +316,6 @@ const TaskForm = ({ taskToEdit, categories, onSave, onCancel }) => {
     );
 };
 
-// Componente para gestionar categorías
 const CategoryManager = ({ categories, onCategorySave, onCategoryDelete, onCategoriesUpdated }) => {
     const { categories: apiCategories } = useApi();
     const [newCategoryName, setNewCategoryName] = useState('');
@@ -355,7 +339,6 @@ const CategoryManager = ({ categories, onCategorySave, onCategoryDelete, onCateg
         }
     };
     
-    // CAMBIO: Lógica para eliminar una categoría
     const handleDeleteCategory = async (categoryId) => {
         if (!window.confirm('ADVERTENCIA: ¿Estás seguro de que quieres eliminar esta categoría? Si hay tareas asociadas, podrían quedar sin categoría.')) {
             return;
@@ -393,7 +376,6 @@ const CategoryManager = ({ categories, onCategorySave, onCategoryDelete, onCateg
             
             <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto pr-1">
                 {categories.map(cat => (
-                    // CAMBIO: Contenedor y botón de borrado para cada categoría
                     <div key={cat._id} className="category-tag text-sm flex items-center space-x-1">
                         <span>{cat.name}</span>
                         <button
@@ -414,13 +396,11 @@ const CategoryManager = ({ categories, onCategorySave, onCategoryDelete, onCateg
 };
 
 
-// Componente para la visualización de una tarea individual
 const TaskItem = ({ task, categoriesMap, onToggleComplete, onEdit, onDelete }) => {
     const isCompleted = task.isCompleted;
     const categoryName = categoriesMap[task.category]?.name || 'Sin Categoría';
     const hasDueDate = !!task.dueDate;
 
-    // Calcular si la fecha de vencimiento es hoy o ya pasó
     const now = new Date();
     now.setHours(0, 0, 0, 0);
     const dueDate = task.dueDate ? new Date(task.dueDate) : null;
@@ -439,19 +419,17 @@ const TaskItem = ({ task, categoriesMap, onToggleComplete, onEdit, onDelete }) =
     return (
         <div className={`task-item ${isCompleted ? 'task-item-completed' : ''} ${isOverdue ? 'border-red-400' : 'border-gray-200'}`}>
             <div className="flex items-center space-x-3 flex-grow min-w-0">
-                {/* Checkbox para completar */}
                 <input
                     type="checkbox"
                     checked={isCompleted}
-                    onChange={() => onToggleComplete(task)} // Cambiado a pasar el objeto task
+                    onChange={() => onToggleComplete(task)} 
                     className="task-checkbox"
                 />
                 
-                {/* Contenido de la Tarea */}
                 <div className="flex-1 min-w-0">
                     <p 
                         className={`task-title truncate cursor-pointer ${priorityClass}`}
-                        onClick={() => onEdit(task)} // Permite editar al hacer click en el título
+                        onClick={() => onEdit(task)} 
                         title={task.title}
                     >
                         {task.title}
@@ -462,7 +440,6 @@ const TaskItem = ({ task, categoriesMap, onToggleComplete, onEdit, onDelete }) =
                         </p>
                     )}
                     
-                    {/* Tags */}
                     <div className="flex space-x-2 mt-1">
                         <span className="category-tag">{categoryName}</span>
 
@@ -476,15 +453,12 @@ const TaskItem = ({ task, categoriesMap, onToggleComplete, onEdit, onDelete }) =
                 </div>
             </div>
 
-            {/* Botones de Acción */}
             <div className="flex items-center space-x-2 ml-4">
-                {/* Botón de Borrar (siempre visible para borrado) */}
                 <button
                     onClick={() => onDelete(task._id)}
                     className="delete-button"
                     title="Eliminar Tarea"
                 >
-                    {/* SVG de Papelera */}
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" style={{ height: '1.25rem', width: '1.25rem' }}>
                         <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
                     </svg>
@@ -499,20 +473,17 @@ const TaskItem = ({ task, categoriesMap, onToggleComplete, onEdit, onDelete }) =
 // ----------------------------------------------------------------------
 
 const App = () => {
-    // Estado para manejar si el usuario está autenticado
     const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
     
-    // Estados de la aplicación
     const [tasks, setTasks] = useState([]);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [taskToEdit, setTaskToEdit] = useState(null);
-    const [showCompleted, setShowCompleted] = useState(false); // PUNTO 3: Estado para filtrar completadas
+    const [showCompleted, setShowCompleted] = useState(false); 
 
     const { tasks: apiTasks, categories: apiCategories } = useApi();
 
-    // Map de categorías para búsqueda rápida
     const categoriesMap = useMemo(() => {
         return categories.reduce((map, cat) => {
             map[cat._id] = cat;
@@ -520,7 +491,6 @@ const App = () => {
         }, {});
     }, [categories]);
 
-    // Lógica para cerrar sesión
     const handleLogout = () => {
         localStorage.removeItem('token');
         setIsAuthenticated(false);
@@ -538,21 +508,17 @@ const App = () => {
         setError(null);
 
         try {
-            // Fetch de Tareas
             const tasksResult = await apiTasks.getAll();
-            // La API debe devolver { tasks: [...] }
             setTasks(tasksResult.tasks || []); 
 
-            // Fetch de Categorías
             const categoriesResult = await apiCategories.getAll();
-            // La API debe devolver { categories: [...] }
             setCategories(categoriesResult.categories || []);
 
         } catch (err) {
             console.error("Error al cargar datos:", err);
             setError(err.message || 'Error al cargar tareas y categorías.');
             if (err.message.includes('token no encontrado')) {
-                 handleLogout(); // Forzar logout si el token falla
+                 handleLogout(); 
             }
         } finally {
             setLoading(false);
@@ -568,81 +534,49 @@ const App = () => {
     // Manejo de Eventos CRUD
     // --------------------------------------------------
 
-    // Maneja la creación/edición de una tarea
     const handleTaskSave = (newTask, action) => {
-        setTaskToEdit(null); // Cerrar modo edición
+        setTaskToEdit(null); 
         
         if (action === 'created') {
-             // Agrega la nueva tarea al inicio de la lista
             setTasks(prev => [newTask, ...prev]);
         } else if (action === 'updated') {
-            // Reemplaza la tarea editada en la lista
             setTasks(prev => prev.map(t => (t._id === newTask._id ? newTask : t)));
         }
     };
     
-    // Maneja la creación de una categoría
     const handleCategorySave = (newCategory) => {
         setCategories(prev => [...prev, newCategory]);
     };
     
-    // CAMBIO: Maneja la eliminación de una categoría
     const handleCategoryDelete = (categoryId) => {
-        // Al eliminar una categoría, también debemos actualizar las tareas
-        // que puedan haber quedado con una categoría ID inválida o nula
         setCategories(prev => prev.filter(cat => cat._id !== categoryId));
-        
-        // Opcional: Si el backend no maneja automáticamente la limpieza
-        // de tareas, podemos actualizar la UI de tareas para que 
-        // cualquier tarea con esa categoría se muestre como 'Sin Categoría'.
-        // Aquí no es estrictamente necesario ya que la categoría se resuelve 
-        // en TaskItem, pero podríamos limpiarlo si fuera necesario:
-        // setTasks(prev => prev.map(t => t.category === categoryId ? { ...t, category: undefined } : t));
     };
 
-    // Marca o desmarca una tarea como completada
     const handleToggleComplete = useCallback(async (task) => {
         const id = task._id;
         const newIsCompleted = !task.isCompleted;
         setError(null);
-        
-        // Optimistic UI update
         setTasks(prevTasks => prevTasks.map(t => 
             t._id === id ? { ...t, isCompleted: newIsCompleted, isUpdating: true } : t
         ));
 
         try {
-            // ----------------------------------------------------------------------------------
-            // CORRECCIÓN CLAVE: 
-            // 1. Nos aseguramos de que el 'title' (requerido) siempre se envíe y no sea nulo.
-            // 2. Usamos el operador ternario `?:` para omitir propiedades si son falsy (null, undefined, '')
-            //    Esto evita que se envíen `null` o `undefined` al backend para campos opcionales, 
-            //    lo cual a menudo causa errores de validación en el servidor con `PUT`.
-            // ----------------------------------------------------------------------------------
             const updatePayload = {
-                // Siempre debe existir un título para pasar la validación PUT
                 title: task.title, 
                 priority: task.priority,
-                isCompleted: newIsCompleted, // Este es el único campo que cambia
-                
-                // Campos opcionales: Solo se incluyen si tienen un valor "truthy"
+                isCompleted: newIsCompleted, 
                 ...(task.description ? { description: task.description } : {}),
-                // Para dueDate, si es null o undefined, el split falla.
-                // Usamos una verificación más limpia.
                 ...(task.dueDate ? { dueDate: task.dueDate.split('T')[0] } : {}), 
                 ...(task.category ? { category: task.category } : {}),
             };
 
-            // Usamos PUT (update) ya que PATCH dio 404
             const result = await apiTasks.update(id, updatePayload);
-            
-            // Final UI update
+
             setTasks(prevTasks => prevTasks.map(t => 
                 t._id === id ? { ...result.task, isUpdating: false } : t
             ));
         } catch (err) {
             setError(err.message || 'Error al actualizar el estado de la tarea.');
-            // Revertir optimistic update en caso de error
             setTasks(prevTasks => prevTasks.map(t => 
                 t._id === id ? { ...t, isCompleted: !newIsCompleted, isUpdating: false } : t
             ));
@@ -650,7 +584,6 @@ const App = () => {
     }, [apiTasks]); 
 
 
-    // CORRECCIÓN CRÍTICA (Punto 2): Eliminar una tarea
     const handleDeleteTask = useCallback(async (taskId) => {
         setError(null);
         if (!window.confirm('¿Estás seguro de que quieres eliminar esta tarea?')) {
@@ -658,14 +591,11 @@ const App = () => {
         }
 
         try {
-            // El backend responde 204 (No Content) o un JSON vacío si todo va bien.
             await apiTasks.delete(taskId); 
             
-            // Eliminar la tarea de la UI
             setTasks(prevTasks => prevTasks.filter(t => t._id !== taskId));
             
         } catch (err) {
-            // Muestra el mensaje de error del backend (como el "Tarea no encontrada...")
             setError(err.message || 'Error al eliminar la tarea.'); 
         }
     }, [apiTasks]);
@@ -676,16 +606,13 @@ const App = () => {
     // Datos Filtrados y Vista
     // --------------------------------------------------
     
-    // PUNTO 3: Filtrar tareas según el estado de completado
     const filteredTasks = useMemo(() => {
         return tasks
             .filter(task => showCompleted ? true : !task.isCompleted)
             .sort((a, b) => {
-                // Tareas incompletas primero
                 if (a.isCompleted !== b.isCompleted) {
                     return a.isCompleted ? 1 : -1;
                 }
-                // Luego por fecha de vencimiento (las más próximas primero)
                 const dateA = a.dueDate ? new Date(a.dueDate).getTime() : Infinity;
                 const dateB = b.dueDate ? new Date(b.dueDate).getTime() : Infinity;
                 return dateA - dateB;
@@ -701,12 +628,8 @@ const App = () => {
         );
     }
 
-    // --------------------------------------------------
-    // Vista Principal del Dashboard
-    // --------------------------------------------------
     return (
         <div className="min-h-screen bg-gray-50 font-sans">
-            {/* Encabezado */}
             <header className="main-header bg-white shadow-md sticky top-0 z-10">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">                    
                     <h1 className="text-2xl font-bold text-gray-800 tracking-tight">
@@ -717,10 +640,7 @@ const App = () => {
                     </button>
                 </div>
             </header>
-
-            {/* Contenido Principal */}
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {/* Mostrar formulario de edición si está activo */}
                 {taskToEdit && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 p-4">
                         <div className="form-card max-w-lg w-full">
@@ -741,27 +661,23 @@ const App = () => {
                     </div>
                 )}
                 
-                {/* Dashboard Grid: 1/3 para crear/categorías, 2/3 para la lista */}
                 <div className="dashboard-grid grid grid-cols-1 lg:grid-cols-3 gap-6">
                     
-                    {/* Columna Izquierda: Creación y Categorías */}
                     <div className="lg:col-span-1 space-y-6">
                         <TaskForm 
                             taskToEdit={null}
                             categories={categories}
                             onSave={handleTaskSave}
-                            onCancel={() => {}} // No hace falta cancelar la creación
+                            onCancel={() => {}} 
                         />
                         <CategoryManager 
                             categories={categories} 
                             onCategorySave={handleCategorySave} 
-                            // CAMBIO: Pasar la función de borrado al CategoryManager
                             onCategoryDelete={handleCategoryDelete} 
                             onCategoriesUpdated={fetchTasksAndCategories}
                         />
                     </div>
 
-                    {/* Columna Derecha: Lista de Tareas */}
                     <div className="lg:col-span-2">
                         <div className="p-6 bg-white rounded-xl shadow-lg h-full">
                             <div className="flex justify-between items-center mb-5">
@@ -769,7 +685,6 @@ const App = () => {
                                     {showCompleted ? 'Todas las Tareas' : 'Tareas Pendientes'} ({filteredTasks.length})
                                 </h2>
                                 
-                                {/* PUNTO 3: Botón de Filtrar */}
                                 <button
                                     onClick={() => setShowCompleted(prev => !prev)}
                                     className="btn-secondary text-sm flex items-center space-x-2"
@@ -781,7 +696,6 @@ const App = () => {
                                 </button>
                             </div>
                             
-                            {/* Lista de Tareas */}
                             <div className="space-y-3">
                                 {loading && (
                                     <div className="flex justify-center items-center py-8">
