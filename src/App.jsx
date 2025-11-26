@@ -68,21 +68,21 @@ const useApi = () => {
     }, []);
 
     const auth = useMemo(() => ({
-        login: (credentials) => request('/auth/login', 'POST', credentials, false),
-        register: (data) => request('/auth/register', 'POST', data, false),
+        login: (credentials) => request('/api/auth/login', 'POST', credentials, false),
+        register: (data) => request('/api/auth/register', 'POST', data, false),
     }), [request]);
 
     const tasks = useMemo(() => ({
-        getAll: () => request('/tasks'), 
-        create: (taskData) => request('/tasks', 'POST', taskData),
-        update: (id, taskData) => request(`/tasks/${id}`, 'PUT', taskData), 
-        delete: (id) => request(`/tasks/${id}`, 'DELETE'), 
+        getAll: () => request('/api/tasks'), 
+        create: (taskData) => request('/api/tasks', 'POST', taskData),
+        update: (id, taskData) => request(`/api/tasks/${id}`, 'PUT', taskData), 
+        delete: (id) => request(`/api/tasks/${id}`, 'DELETE'), 
     }), [request]);
 
     const categories = useMemo(() => ({
-        getAll: () => request('/categories'),
-        create: (categoryData) => request('/categories', 'POST', categoryData),
-        delete: (id) => request(`/categories/${id}`, 'DELETE'),
+        getAll: () => request('/api/categories'),
+        create: (categoryData) => request('/api/categories', 'POST', categoryData),
+        delete: (id) => request(`/api/categories/${id}`, 'DELETE'),
     }), [request]);
 
     return { auth, tasks, categories };
