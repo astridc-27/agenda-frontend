@@ -1,0 +1,382 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * TaskFlow Dashboard - Estilos Globales
+ * Diseño: Elegante, Cómodo y Responsivo (Basado en Tarjetas)
+ */
+
+/* -------------------------------------------------- */
+/* 1. Variables de Diseño y Paleta de Colores */
+/* -------------------------------------------------- */
+:root {
+    /* Colores Principales */
+    --color-primary: #4f46e5;      /* Indigo 600 - Profundo y Sólido */
+    --color-primary-light: #6366f1; /* Indigo 500 - Para interacciones */
+    --color-primary-dark: #3730a3;  /* Indigo 800 - Para hover */
+    --color-success: #10b981;      /* Emerald 500 */
+    --color-danger: #ef4444;       /* Red 500 */
+    --color-warning: #f59e0b;      /* Amber 500 */
+
+    /* Colores de Fondo y Borde */
+    --color-bg-subtle: #f9fafb;     /* Fondo principal muy claro */
+    --color-bg-card: #ffffff;      /* Fondo de las tarjetas */
+    --color-border: #e5e7eb;       /* Borde sutil */
+    
+    /* Colores de Texto */
+    --color-text-dark: #1f2937;
+    --color-text-light: #6b7280;
+
+    /* Propiedades de Layout */
+    --radius-base: 12px;
+}
+
+/* -------------------------------------------------- */
+/* 2. Estilos Globales y Tipografía Base */
+/* -------------------------------------------------- */
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--color-bg-subtle);
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+    color: var(--color-text-dark);
+}
+
+/* -------------------------------------------------- */
+/* 3. Estilos de Contenedores y Layout */
+/* -------------------------------------------------- */
+
+/* Estilos de la Tarjeta Principal (Formularios y Auth) */
+.form-card {
+    background: var(--color-bg-card);
+    padding: 1.75rem;
+    border-radius: var(--radius-base);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Contenedor de Autenticación */
+.auth-container {
+    max-width: 400px;
+    width: 100%;
+    background: white;
+    padding: 2.5rem; 
+    border-radius: 16px; 
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border: 1px solid #f0f0f0;
+}
+
+/* Contenedor de la Lista de Tareas (Aplica estilo de Tarjeta) */
+.lg\:col-span-2 > div {
+    padding: 1.75rem; 
+    background: var(--color-bg-card);
+    border-radius: var(--radius-base);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--color-border);
+    height: 100%;
+}
+
+/* Encabezado Principal */
+.main-header {
+    border-bottom: 1px solid var(--color-border);
+    background-color: var(--color-bg-card);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+}
+/* Aumenta el padding vertical del header para más aire */
+.main-header .py-4 {
+padding: 1.25rem 3rem;
+}
+.main-header h1 {
+    font-size: 1.8rem;
+}
+.mx-auto {
+    margin-inline: auto;
+    width: 90%;
+}
+
+/* -------------------------------------------------- */
+/* 4. Inputs y Selects */
+/* -------------------------------------------------- */
+.input-field {
+    width: 85%;
+    padding: 0.8rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: #fcfcfc;
+}
+.input-field:focus {
+    border-color: var(--color-primary-light);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    background-color: var(--color-bg-card);
+}
+textarea.input-field {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.space-y-4 {
+display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+button {
+    cursor: pointer;
+}
+.mt-4 button {
+background: none;
+    border: none;
+    color: var(--color-primary);
+    font-size: 1rem;
+    margin: 15px 0;
+    cursor: pointer;
+}
+/* -------------------------------------------------- */
+/* 5. Botones y Acciones */
+/* -------------------------------------------------- */
+.btn-primary {
+    padding: 0.8rem 1.6rem; 
+    background-color: var(--color-primary);
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    box-shadow: 0 5px 15px -3px rgba(79, 70, 229, 0.4); 
+}
+.btn-primary:hover:not(:disabled) {
+    background-color: var(--color-primary-dark);
+    box-shadow: 0 8px 20px -5px rgba(79, 70, 229, 0.5);
+    transform: translateY(-2px);
+}
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+.btn-secondary {
+    padding: 0.7rem 1.4rem;
+    font-size: 0.9rem;
+    background-color: white;
+    color: var(--color-text-light);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+.btn-secondary:hover:not(:disabled) {
+    background-color: #f7f9fc;
+    border-color: var(--color-primary-light);
+    color: var(--color-primary);
+}
+.logout-button {
+    padding: 0.6rem 1.1rem;
+    font-size: 0.9rem;
+    background-color: #fee2e2;
+    color: var(--color-danger);
+    border: 1px solid #fca5a5;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+/* -------------------------------------------------- */
+/* 6. Lista de Tareas (TaskItem) */
+/* -------------------------------------------------- */
+.tasks-header {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--color-text-dark);
+    border-bottom: 3px solid #f3f4f6;
+    margin-bottom: 2rem; /* AUMENTADO para más separación con la lista */
+    padding-bottom: 0.75rem;
+}
+
+.task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    background-color: var(--color-bg-card);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--color-border);
+    border-left: 6px solid var(--color-primary-light); 
+    transition: all 0.2s ease-in-out;
+}
+
+.task-item:hover {
+    box-shadow: 0 4px 8px -1px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.task-item-completed {
+    border-left-color: var(--color-success);
+    opacity: 0.8;
+    background-color: #f7fcfb; 
+}
+
+.task-checkbox {
+    height: 1.5rem;
+    width: 1.5rem; 
+    min-width: 1.5rem;
+    accent-color: var(--color-success);
+}
+
+.task-title {
+    font-weight: 700;
+    font-size: 1.15rem;
+}
+
+.task-description {
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+    margin-top: 4px;
+}
+
+.task-item-completed .task-title, 
+.task-item-completed .task-description {
+    text-decoration: line-through;
+    color: #9ca3af; 
+}
+
+/* Etiquetas (Tags) */
+.category-tag, .due-date-tag {
+display: inline-flex;
+    padding: 0.3rem 0.75rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    margin: 10px;
+}
+.category-tag {
+    background-color: #eef2ff; 
+    color: var(--color-primary-dark);
+}
+.due-date-tag {
+    background-color: #f3f4f6; 
+    color: #4b5563; 
+}
+.category-tag span {
+    padding: 0 10px 0 0;
+}
+
+/* Modificadores de Estado */
+.task-item[class*="border-red-400"] {
+    border-left-color: var(--color-danger);
+}
+.due-date-tag.bg-red-200 { 
+    background-color: #fee2e2; 
+    color: #991b1b; 
+    font-weight: 700; 
+}
+.due-date-tag.bg-yellow-200 { 
+    background-color: #fef3c7; 
+    color: #92400e; 
+}
+
+.priority-high { color: var(--color-danger); }
+.priority-medium { color: var(--color-warning); }
+.priority-low { color: var(--color-success); }
+
+
+.delete-button {
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
+    line-height: 1;
+}
+.delete-button:hover {
+    color: var(--color-danger);
+    transform: scale(1.1);
+}
+
+/* Otros Elementos */
+.error-box {
+    background-color: #fef2f2;
+    color: #b91c1c;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #fca5a5;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+}
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left-color: var(--color-primary);
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* -------------------------------------------------- */
+/* 7. Adaptación a Dispositivos (Responsive) */
+/* -------------------------------------------------- */
+
+/* Estructura de Columnas (Desktop y Tablets Grandes) */
+@media (min-width: 1024px) {
+    .dashboard-grid {
+        /* Define la estructura 1.2/2.0 para los paneles */
+        grid-template-columns: 1.2fr 2fr; 
+        gap: 2rem;
+    }
+    main {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+}
+
+/* Teléfonos Móviles (max-width: 767px) */
+@media (max-width: 767px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr; /* Una sola columna en móvil */
+        gap: 1.5rem;
+    }
+    .tasks-header {
+        font-size: 1.25rem; 
+    }
+    
+    /* Ordenar los paneles: formularios (1) primero, lista (2) después */
+    .dashboard-grid > div:nth-child(1) {
+        order: 1;
+    }
+    .dashboard-grid > div:nth-child(2) {
+        order: 2;
+    }
+
+    /* Ajustes para el Task Item en móvil */
+    .task-item {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1rem;
+        gap: 0.5rem;
+    }
+    .task-item .flex-grow { width: 100%; }
+    
+    .task-item > .flex:last-child {
+        width: 100%;
+        justify-content: flex-end; 
+        margin-top: 0.5rem;
+        margin-left: 0;
+    }
+}
